@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Flight Connectivity System</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-icon">✈</div><div><b>SkyReach</b><small>CONNECTIVITY SYSTEM</small></div></div>
+    <div class="side-label">WORKSPACE</div>
+    <button class="nav active" data-tab="overview">▦ <span>Overview</span></button>
+    <button class="nav" data-tab="network">⌘ <span>Flight Network</span></button>
+    <button class="nav" data-tab="matrices">▤ <span>Matrices</span></button>
+    <button class="nav" data-tab="checker">⇄ <span>Route Checker</span></button>
+    <div class="sidebar-bottom"><div class="algorithm-pill"><span class="pulse"></span><div><b>Warshall's Algorithm</b><small>All-pairs reachability</small></div></div><small class="version">DISCRETE MATHEMATICS · PROJECT</small></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><div><div class="eyebrow">FLIGHT CONNECTIVITY / <span id="crumb">OVERVIEW</span></div><h1 id="pageTitle">Flight Connectivity Dashboard</h1></div><div class="top-actions"><span class="status"><i></i> SYSTEM READY</span><button class="reset-btn" id="resetBtn">↻ Reset demo</button></div></header>
+    <section class="page active-page" id="overview">
+      <div class="hero"><div><span class="hero-kicker">DIRECT FLIGHTS + LAYOVERS</span><h2>Can you get<br/>there from here?</h2><p>Explore airport reachability using graph theory and Warshall’s algorithm.</p><button class="primary" data-goto="checker">Check a route <span>→</span></button></div><div class="hero-visual"><div class="orbit orbit1"></div><div class="orbit orbit2"></div><div class="plane">✈</div><span class="airport a1">DEL</span><span class="airport a2">BOM</span><span class="airport a3">HYD</span><span class="airport a4">BLR</span><span class="airport a5">GOI</span><svg viewBox="0 0 360 240" aria-hidden="true"><path d="M65 65 L170 95 L265 150 L310 70 M65 65 L65 185" /></svg></div></div>
+      <div class="stats-grid"><div class="stat-card"><div class="stat-icon blue">⌖</div><span>Airports</span><strong id="airportCount">5</strong><small>Nodes in the network</small></div><div class="stat-card"><div class="stat-icon purple">↗</div><span>Direct flights</span><strong id="flightCount">4</strong><small>Directed connections</small></div><div class="stat-card"><div class="stat-icon green">◎</div><span>Reachable pairs</span><strong id="reachableCount">10</strong><small>Positive-length paths</small></div><div class="stat-card"><div class="stat-icon orange">⌘</div><span>Complexity</span><strong>O(V³)</strong><small>Warshall's algorithm</small></div></div>
+      <div class="content-grid"><div class="panel"><div class="panel-head"><div><h3>Airport network</h3><p>Illustrative route map · arrows show direction</p></div><button class="text-btn" data-goto="network">Manage network →</button></div><div class="network-map" id="miniNetwork"></div></div><div class="panel"><div class="panel-head"><div><h3>Quick route check</h3><p>Test any origin and destination</p></div><span class="tiny-tag">LIVE</span></div><div class="quick-form"><label>ORIGIN AIRPORT</label><select id="quickFrom"></select><label>DESTINATION AIRPORT</label><select id="quickTo"></select><button class="primary full" id="quickCheck">Check connectivity <span>→</span></button><div id="quickResult" class="result-box muted">Choose airports to test a route.</div></div></div></div>
+      <div class="footnote">MODEL NOTE · A route means at least one flight. Flight schedules, prices and transfer times are not modeled.</div>
+    </section>
+    <section class="page" id="network">
+      <div class="section-intro"><div><h2>Flight network</h2><p>Manage airports and directed direct-flight connections.</p></div><button class="primary" id="addAirportBtn">＋ Add airport</button></div>
+      <div class="content-grid network-layout"><div class="panel"><div class="panel-head"><div><h3>Network graph</h3><p>Each arrow represents one direct flight</p></div><span class="tiny-tag" id="networkBadge">5 NODES</span></div><div class="network-map large-map" id="fullNetwork"></div><div class="legend"><span><i class="legend-dot"></i> Airport</span><span><i class="legend-line"></i> Direct flight</span></div></div>
+      <div class="panel"><div class="panel-head"><div><h3>Direct flights</h3><p>One-way connections</p></div></div><form id="flightForm" class="stack-form"><label>FROM</label><select id="flightFrom"></select><label>TO</label><select id="flightTo"></select><button class="primary full" type="submit">＋ Add direct flight</button></form><div class="flight-list" id="flightList"></div></div></div>
+      <div class="panel airport-panel"><div class="panel-head"><div><h3>Airports in this model</h3><p>Airport codes are unique identifiers</p></div></div><div id="airportList" class="airport-list"></div></div>
+    </section>
+    <section class="page" id="matrices">
+      <div class="section-intro"><div><h2>Connectivity matrices</h2><p>Compare direct flights with all reachable destinations.</p></div><button class="secondary" id="recomputeBtn">↻ Recompute closure</button></div>
+      <div class="matrix-explainer"><div class="formula">R[i][j] = R[i][j] ∨ (R[i][k] ∧ R[k][j])</div><p>If airport <b>i</b> reaches <b>k</b>, and <b>k</b> reaches <b>j</b>, then <b>i</b> can reach <b>j</b>.</p></div>
+      <div class="content-grid matrix-grid"><div class="panel"><div class="panel-head"><div><h3>Adjacency matrix</h3><p>Direct flights only</p></div><span class="matrix-label direct">INPUT R</span></div><div class="table-wrap" id="adjMatrix"></div></div><div class="panel"><div class="panel-head"><div><h3>Reachability matrix</h3><p>Direct + indirect routes</p></div><span class="matrix-label closure">CLOSURE R⁺</span></div><div class="table-wrap" id="reachMatrix"></div></div></div>
+      <div class="footnote">Diagonal values remain 0 unless a non-empty directed cycle returns to the same airport. This project uses positive-length reachability.</div>
+    </section>
+    <section class="page" id="checker">
+      <div class="section-intro"><div><h2>Route connectivity checker</h2><p>Find out whether any route exists between two airports.</p></div><span class="tiny-tag">WARSHALL POWERED</span></div>
+      <div class="checker-card"><div class="checker-top"><span class="checker-symbol">⇄</span><div><h3>Where would you like to go?</h3><p>Layovers are allowed. Direction matters.</p></div></div><div class="route-inputs"><div><label>ORIGIN</label><select id="checkFrom"></select></div><button id="swapBtn" class="swap" title="Swap airports">⇄</button><div><label>DESTINATION</label><select id="checkTo"></select></div><button id="checkRoute" class="primary">Check route <span>→</span></button></div><div id="routeResult" class="route-result empty"><div class="empty-icon">⌁</div><div><b>Ready to check connectivity</b><p>Select an origin and destination above.</p></div></div></div>
+      <div class="content-grid lower-check"><div class="panel"><div class="panel-head"><div><h3>How it works</h3><p>Three steps from graph to answer</p></div></div><div class="steps"><div><span>01</span><section><b>Build the graph</b><p>Each airport is a node; each direct flight is a directed edge.</p></section></div><div><span>02</span><section><b>Compute transitive closure</b><p>Warshall's triple loop tests every possible intermediate airport.</p></section></div><div><span>03</span><section><b>Read the answer</b><p>A 1 in the reachability matrix means a route exists.</p></section></div></div></div><div class="panel"><div class="panel-head"><div><h3>Algorithm details</h3><p>Complexity for V airports</p></div></div><div class="complexity"><div><span>Time complexity</span><b>O(V³)</b></div><div><span>Space complexity</span><b>O(V²)</b></div><div><span>Algorithm type</span><b>Dynamic programming</b></div></div><div class="callout">This system answers <b>reachability</b>, not cheapest or shortest flight.</div></div></div>
+    </section>
+    <footer>SKYREACH · FLIGHT CONNECTIVITY SYSTEM <span>Built for Discrete Mathematics · Warshall's Algorithm</span></footer>
+  </main>
+</div>
+<div class="modal-backdrop" id="airportModal"><div class="modal"><button class="close" id="closeModal">×</button><h3>Add an airport</h3><p>Add a node to your directed graph.</p><form id="airportForm"><label>AIRPORT NAME</label><input id="newName" placeholder="e.g. Chennai" required maxlength="35"/><label>AIRPORT CODE (2–5 LETTERS)</label><input id="newCode" placeholder="e.g. MAA" required maxlength="5" pattern="[A-Za-z]{2,5}"/><div class="modal-actions"><button type="button" class="secondary" id="cancelModal">Cancel</button><button class="primary" type="submit">Add airport</button></div><div id="formError" class="form-error"></div></form></div></div>
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
